@@ -152,16 +152,16 @@ def create_model(my_args, num_inputs):
     #layer that feeds values
     model.add(keras.layers.Input(shape=(num_inputs, )))
     #output layer. If its a regression model, it will always have one output
-    model.add(keras.layers.Dense(units=128, activation='tanh'))
-    model.add(keras.layers.Dense(units=256, activation='tanh'))
+    model.add(keras.layers.Dense(units=128, activation='sigmoid'))
+    model.add(keras.layers.Dense(units=256, activation='sigmoid'))
     #model.add(keras.layers.Dense(units=512, activation='relu'))
     #model.add(keras.layers.Dense(units=1024, activation='relu'))
     #model.add(keras.layers.Dense(units=2048, activation='tanh'))
     #model.add(keras.layers.Dense(units=2048, activation='relu'))
     #model.add(keras.layers.Dense(units=1024, activation='relu'))
-    #model.add(keras.layers.Dense(units=512, activation='relu'))
-    model.add(keras.layers.Dense(units=256, activation='tanh'))
-    model.add(keras.layers.Dense(units=128, activation='tanh'))
+    model.add(keras.layers.Dense(units=512, activation='relu'))
+    model.add(keras.layers.Dense(units=256, activation='sigmoid'))
+    model.add(keras.layers.Dense(units=128, activation='sigmoid'))
     model.add(keras.layers.Dense(units=64, activation='sigmoid'))
     #compile means prepare the model to be fit
     model.compile(loss="mse", optimizer=keras.optimizers.Adam(learning_rate=0.001))#learning_rate=0.001
@@ -180,8 +180,8 @@ def do_fit(my_args):
     X = pipeline.transform(X)
     model = create_model(my_args, X.shape[1])
 
-    early_stopping = keras.callbacks.EarlyStopping(monitor='loss', patience=100, restore_best_weights=True)#, restore_best_weights=True
-    model.fit(X, y, epochs=500, verbose=1, callbacks=[early_stopping], validation_split = 0.2, shuffle = True)
+    early_stopping = keras.callbacks.EarlyStopping(monitor='loss', patience=50, restore_best_weights=True)#, restore_best_weights=True
+    model.fit(X, y, epochs=1000, verbose=1, callbacks=[early_stopping], validation_split = 0.3, shuffle = True)
     model_file = get_model_filename(my_args.model_file, train_file)
 
     joblib.dump((pipeline, model), model_file)
